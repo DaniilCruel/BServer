@@ -13,14 +13,15 @@ namespace Data
     public class Message     // ServerMessage -> Sender -> Reciever -> Messege -> List -> |
     {
         public ServerMessage ServerMessage { set; get; } = ServerMessage.None;
-        public string Sender { set; get; }
+        public string User { set; get; }
+        public TcpClient Sender { set; get; }
         public NetworkStream Reciever { set; get; }
         public string messege { set; get; }
         public List<string> Users { set; get; } = new List<string>();
         public Message()
         {
             ServerMessage = ServerMessage.None;
-            Sender = null;
+            User = null;
             Reciever = null;
             messege = null;
             Users = null;
@@ -28,13 +29,21 @@ namespace Data
 
         public void SendMessage(Message mess) 
         {
-            string str = ((int)mess.ServerMessage).ToString() + "//:" + mess.Sender + "//:" + mess.messege + "//:" + mess.Users + "//:";
+            string Users = null;
+            if (mess.Users != null)
+            foreach (string user in mess.Users)
+                Users +=  user+ "-" ;
+
+            string str = ((int)mess.ServerMessage).ToString() + "//:" + mess.User + "//:" + mess.messege + "//:" + Users + "|END";
+                       
             System.Console.WriteLine("Send:  " + str);
             byte[] buff = Encoding.UTF8.GetBytes(str);
             mess.Reciever.Write(buff, 0, buff.Length);
             mess.Reciever.Flush();
-
         }
+
+
+
         public Message RessiveMessege(TcpClient client) 
         {
             string strM;
@@ -55,22 +64,31 @@ namespace Data
             Message mess = new Message();
 
             int indexOfChar = strM.IndexOf("//:");
-            System.Console.WriteLine("SerMess " + strM.Substring(0, indexOfChar));
+            System.Console.WriteLine("ServerMess         :" + strM.Substring(0, indexOfChar));
             mess.ServerMessage = (ServerMessage)Convert.ToInt32(strM.Substring(0, indexOfChar));
             strM = strM.Remove(0, indexOfChar + 3);
 
             indexOfChar = strM.IndexOf("//:");
-            mess.Sender = strM.Substring(0, indexOfChar);
-            System.Console.WriteLine("SenderMess " + mess.Sender);
+            mess.User = strM.Substring(0, indexOfChar);
+            System.Console.WriteLine("SenderMess         :" + mess.User);
             strM = strM.Remove(0, indexOfChar + 3);
 
             indexOfChar = strM.IndexOf("//:");
             mess.messege = strM.Substring(0, indexOfChar);
-            System.Console.WriteLine("Mess " + mess.messege);
+            System.Console.WriteLine("Mess            :" + mess.messege);
             strM = strM.Remove(0, indexOfChar + 3);
 
+            indexOfChar = strM.IndexOf("|END");
+            string Users = strM.Substring(0, indexOfChar);
+            System.Console.WriteLine("Users           :" + Users);
+            
+            string[] ArrUsers = Users.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+            mess.Users = new List<string>();
+            foreach (string s in ArrUsers)
+                mess.Users.Add(s);
+            strM = strM.Remove(0, indexOfChar);
 
-            System.Console.WriteLine("Ressive2: " + strM);
+            System.Console.WriteLine("Ressive2: " + strM );
             return (mess);
 
         }

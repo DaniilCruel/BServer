@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using System.IO;
 using Data;
+using System.Collections.Generic;
 
 namespace Server
 {
@@ -22,6 +23,7 @@ namespace Server
         private readonly CancellationTokenSource listenToken; // Отмена прослушивания 
 
         public ObservableCollection<User> ClientList { get; set; } // Список клиентов
+
         public ObservableCollection<FileInfo> FileList { get; set; }         // Список файлов 
 
         public event EventHandler<string> AddToLog; // Событие записи в лог
@@ -153,8 +155,18 @@ namespace Server
                 if (!server.Pending()) continue; // Попытка соединения
                 incomingConnection = server.AcceptTcpClient();
                 Message messadd = new Message();
-                string clientName = messadd.RessiveMessege(incomingConnection).Sender; // Получаем имя клиента и добавляем его в список
+                string clientName = messadd.RessiveMessege(incomingConnection).User; // Получаем имя клиента и добавляем его в список
                 User client = new User(1,incomingConnection, clientName, new CancellationTokenSource());
+
+
+                List<string> ClientListM = new List<string>();
+                foreach (User user in ClientList)
+                {
+                    ClientListM.Add(user.Login);
+                }
+                Message Collection = new Message() { ServerMessage = ServerMessage.UsersCollection, Reciever= incomingConnection.GetStream(), Users = ClientListM };
+                Collection.SendMessage(Collection );
+
                 dispatcher.BeginInvoke(new Action(() => ClientList.Add(client)));
                 Task.Run(() => ClientMessaging(client));
                 AddToLog(this, $"{client.Login} successful connected");

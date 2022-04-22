@@ -200,19 +200,18 @@ namespace TCPChat.ViewModels
             nwStream = user.TcpClient.GetStream();
 
             Username = Username ?? "Unknown";
-
-            Message mess = new Message      // ServerMessage -> Sender -> Reciever -> Messege -> List -> |
+            ///////////////
+            Message mess = new Message()      // ServerMessage -> Sender -> Reciever -> Messege -> List -> |
             {
                 ServerMessage = ServerMessage.Conect,
-                Sender = Username,
+                User = Username,
                 Reciever = nwStream
             };
             mess.SendMessage(mess);
-
-
-            BinaryFormatter bf = new BinaryFormatter();
-            Message2 message = (Message2)bf.Deserialize(nwStream);
-            if (message.ServerMessage == ServerMessage.WrongUsername)
+            ////////////
+            Message messCl = new Message();
+            messCl = messCl.RessiveMessege(user.TcpClient); // Получаем имя клиента и добавляем его в список
+            if (messCl.ServerMessage == ServerMessage.WrongUsername)
             {
                 user.TcpClient.Client.Shutdown(SocketShutdown.Both);
                 user.TcpClient.Close();
@@ -220,8 +219,8 @@ namespace TCPChat.ViewModels
             }
             App.Current.Dispatcher.Invoke(new Action(() =>
             {
-                foreach (var i in message.Users)
-                    Users.Add(i.Login);
+                foreach (var i in messCl.Users)
+                    Users.Add(i);
             }));
 
             return true;

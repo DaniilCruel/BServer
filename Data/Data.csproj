@@ -45,10 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Message.cs" />
-    <Compile Include="ServerMessage.cs" />
-    <Compile Include="Message2.cs" />
-    <Compile Include="User.cs" />
     <Compile Include="MessageUI.cs" />
+    <Compile Include="ServerMessage.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
