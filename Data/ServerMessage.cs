@@ -9,14 +9,13 @@ namespace Data
     public enum ServerMessage   // ServerMessage -> Sender -> Reciever -> Messege -> List -> |
     {
         None,
-        AddUser,                //
+        AddUser,                // добовление пользователя
         UsersCollection,        // передача листа пользователей
-        Conect,                  // запрос на соединение
+        Conect,                 // запрос на соединение
         RemoveUser,             // удаление пользователя
         Message,                // сообщение
-        BroadcastMessage,       // сообщение всем
-        BreakConnection,        // новый пользователь
-        Broadcast,              // 
+        BreakConnection,        // разрыв соединения на строне пользователя
+        Broadcast,              // сообщение всем
         WrongUsername           // имя занято
     }
 }

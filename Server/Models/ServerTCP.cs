@@ -9,6 +9,8 @@ using System.Windows.Threading;
 using System.IO;
 using Data;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Linq;
 
 namespace Server
 {
@@ -92,7 +94,7 @@ namespace Server
                 while (client.GetStream().DataAvailable)
                 {
                     bytes = client.GetStream().Read(buff, 0, buff.Length);
-                    str.Append(Encoding.Unicode.GetString(buff, 0, bytes));
+                    str.Append(Encoding.UTF8.GetString(buff, 0, bytes));
                 }
             }
             return str.ToString() != "" ? str.ToString() : "-1";
@@ -155,9 +157,8 @@ namespace Server
                 if (!server.Pending()) continue; // Попытка соединения
                 incomingConnection = server.AcceptTcpClient();
                 Message messadd = new Message();
-                string clientName = messadd.RessiveMessege(incomingConnection).User; // Получаем имя клиента и добавляем его в список
+                string clientName = messadd.RessiveMessege(incomingConnection).UserSend; // Получаем имя клиента и добавляем его в список
                 User client = new User(1,incomingConnection, clientName, new CancellationTokenSource());
-
 
                 List<string> ClientListM = new List<string>();
                 foreach (User user in ClientList)
@@ -166,10 +167,14 @@ namespace Server
                 }
                 Message Collection = new Message() { ServerMessage = ServerMessage.UsersCollection, Reciever= incomingConnection.GetStream(), Users = ClientListM };
                 Collection.SendMessage(Collection );
+               
 
                 dispatcher.BeginInvoke(new Action(() => ClientList.Add(client)));
                 Task.Run(() => ClientMessaging(client));
+
                 AddToLog(this, $"{client.Login} successful connected");
+                Message mess = new Message() { ServerMessage = ServerMessage.AddUser, UserSend = client.Login };
+                Broadcast(mess);
 
             }
         }
@@ -180,24 +185,49 @@ namespace Server
         /// <param name="client">Клиент, сообщения которого обрабатываются</param>
         private void ClientMessaging(User client)
         {
-            string command = "";
+            Message readMes = new Message();
             while (!client.ClientToken.Token.IsCancellationRequested) // Обрабатываем, пока клиент не отключится
             {
                 if (client.TcpClient.Client.Poll(1000000, SelectMode.SelectRead)) // Изменение на сокете
                 {
                     if (client.TcpClient.GetStream().DataAvailable) // Есть какие-то данные
                     {
-                        command = ReceiveMessage2(client.TcpClient);
-                        switch (command)
+                        readMes = readMes.RessiveMessege(client.TcpClient); // None,   RemoveUser,    Message,   Broadcast
+                        switch ((int)readMes.ServerMessage)
                         {
-                            case "disconnect_request":
+                            case 1: // none
+                                AddToLog(this, $"None:{client.Login}: {readMes}");
                                 ClientDisconnection(client);
                                 break;
-                            case "send_file_request":
-                                ReceiveFile(client);
+                            case 4:  //RemoveUser
+                                
+                                ClientList.Remove(ClientList.Where(x => x.Login == readMes.UserSend).First());
+                                Broadcast(new Message() { ServerMessage = ServerMessage.RemoveUser, UserSend = readMes.UserSend } );
+                                //  message.Sender.TcpClient.GetStream().Close();
+                                //  message.Sender.TcpClient.Close();
+                                dispatcher.BeginInvoke(new Action(() => ClientList.Remove(ClientList.Where(x => x.Login == readMes.UserSend).First())));
+                                AddToLog(this, $"{client.Login}: disconnected");
+                                break;
+                            case 5:  // Message, 
+                                
+                                NetworkStream nwStream = ClientList.Where(x => x.Login == readMes.UserResiv).First().TcpClient.GetStream();
+                                NetworkStream nwStreamSender = ClientList.Where(x => x.Login == readMes.UserSend).First().TcpClient.GetStream();
+
+                                Message Res = new Message() { Reciever = nwStream, UserSend= readMes.UserSend, messege = readMes.messege, ServerMessage = ServerMessage.Message };
+                                Message Send = new Message() { Reciever = nwStreamSender, UserSend = readMes.UserSend, messege = readMes.messege, ServerMessage = ServerMessage.Message };
+
+                                Res.SendMessage(Res);
+                                Send.SendMessage(Send);
+
+                                AddToLog(this, $"Message:{client.Login}: {readMes.messege}");
+                                break;
+                            case 7: //Broadcast
+                                Message mess = new Message() { ServerMessage = ServerMessage.Message, messege = readMes.messege, UserSend = readMes.UserSend };
+                                Broadcast(mess);
+                                AddToLog(this, $"Broadcast: {client.Login}: {readMes}");
                                 break;
                             default:
-                                AddToLog(this, $"{client.Login}: {command}");
+                                AddToLog(this, $"{client.Login}: {readMes}");
                                 break;
                         }
                     }
@@ -246,6 +276,18 @@ namespace Server
             foreach (var i in Directory.GetFiles(filePath))
             {
                 dispatcher.BeginInvoke(new Action(() => FileList.Add(new FileInfo($"{filePath}{i}"))));
+            }
+        }
+        public void Broadcast(Message message)
+        {
+            foreach (var client in ClientList)
+            {
+
+                    NetworkStream nwStream = client.TcpClient.GetStream();
+                    message.UserResiv = client.Login;
+                    message.Reciever = nwStream;
+                    message.SendMessage(message);
+              
             }
         }
     }

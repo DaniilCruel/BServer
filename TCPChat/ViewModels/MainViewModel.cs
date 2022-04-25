@@ -138,7 +138,7 @@ namespace TCPChat.ViewModels
 
         public MainViewModel()
         {
-            ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5000);
+            ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5002);
             user = new User();
 
             Users = new ObservableCollection<string>();
@@ -173,20 +173,25 @@ namespace TCPChat.ViewModels
 
             SendCommand = new RelayCommand(x => Task.Run(() =>
             {
-                Message2 message = new Message2()
+                Message message = new Message()
                 {
-                    MessageString = TextMessage,
-                    Sender = user
-                };
+                    ServerMessage = ServerMessage.Message,
+                    messege = TextMessage,
+                    Reciever = user.TcpClient.GetStream(),
+                    UserSend = username
+            };
 
                 if (Users.ElementAt(0) == SelectedUser || SelectedUser == null)
+                {
                     message.ServerMessage = ServerMessage.Broadcast;
+                   
+                }
                 else
                 {
                     message.ServerMessage = ServerMessage.Message;
-                    message.Reciever = new User() { Login = SelectedUser };
+                    message.UserResiv = SelectedUser;
                 }
-                SendData(message);
+                message.SendMessage(message);
                 TextMessage = string.Empty;
             }
             ));
@@ -204,7 +209,8 @@ namespace TCPChat.ViewModels
             Message mess = new Message()      // ServerMessage -> Sender -> Reciever -> Messege -> List -> |
             {
                 ServerMessage = ServerMessage.Conect,
-                User = Username,
+                UserSend = Username,
+                UserResiv = "",
                 Reciever = nwStream
             };
             mess.SendMessage(mess);
@@ -228,12 +234,60 @@ namespace TCPChat.ViewModels
 
         public void GetData()
         {
+
+            while (true)
+            {
+                try
+                {
+                    //Message message = (Message)bf.Deserialize(nwStream);
+                    Message message = new Message() ;
+                    message = message.RessiveMessege(user.TcpClient); // Получаем имя клиента и добавляем его в список
+                     
+                    if (message.ServerMessage == ServerMessage.Message)
+                    {
+                        App.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            if (message.UserSend == Username)
+                                MessagessItems.Add(new MessageUI() { Sender = $"me: ", Message = message.messege, Color = "#000000", FontStyle = FontStyles.Normal, Align = "Right" });
+                            else
+                                MessagessItems.Add(new MessageUI() { Sender = $"{message.UserSend}: ", Message = message.messege, Color = "#000000", FontStyle = FontStyles.Normal, Align = "Left" });
+                        }));
+                    }
+                    if (message.ServerMessage == ServerMessage.AddUser &&  message.UserSend != Username)
+                    {
+                        App.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            MessagessItems.Add(new MessageUI() { Sender = message.UserSend, Message = " joined the chat", Color = "#40698c", FontStyle = FontStyles.Oblique, Align = "Left" });
+                            if (!Users.Contains(message.UserSend))
+                                Users.Add($"{message.UserSend}");
+                        }));
+                    }
+
+                    else if (message.ServerMessage == ServerMessage.RemoveUser)
+                    {
+                        App.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            MessagessItems.Add(new MessageUI() { Sender = message.UserSend, Message = " has left the chat", Color = "#40698c", FontStyle = FontStyles.Oblique, Align = "Left" });
+                            Users.Remove(Users.Where(x => x == message.UserSend).First());
+                        }));
+                    }
+                    
+                }
+
+                catch (Exception e) { Console.WriteLine(e.Message); }
+
+            }
+        }
+
+        /*
+        public void GetData2()
+        {
             BinaryFormatter bf = new BinaryFormatter();
             while (true)
             {
                 try
                 {
-                    Message2 message = (Message2)bf.Deserialize(nwStream);
+                    Message message = (Message)bf.Deserialize(nwStream);
                     if (message.ServerMessage == ServerMessage.Message)
                     {
                         App.Current.Dispatcher.Invoke(new Action(() =>
@@ -267,8 +321,8 @@ namespace TCPChat.ViewModels
 
             }
         }
-
-        public void SendData(Message2 message)
+        */
+        public void SendData(Message message)
         {
             BinaryFormatter bf = new BinaryFormatter();
             bf.Serialize(nwStream, message);
@@ -278,7 +332,8 @@ namespace TCPChat.ViewModels
         {
             try
             {
-                SendData(new Message2 { Sender = user, ServerMessage = ServerMessage.RemoveUser });
+                Message Mess = new Message() { Sender = user.TcpClient, ServerMessage = ServerMessage.RemoveUser, UserSend = username };
+                Mess.SendMessage(Mess);
             }
             catch { }
         }

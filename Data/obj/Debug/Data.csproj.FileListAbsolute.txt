@@ -10,7 +10,6 @@ C:\Users\User-PC\Desktop\ServerTCP\Data\obj\Debug\Data.csprojAssemblyReference.c
 C:\Users\User-PC\Desktop\ServerTCP\Data\obj\Debug\Data.csproj.CoreCompileInputs.cache
 C:\Users\User-PC\Desktop\ServerTCP\Data\obj\Debug\Data.dll
 C:\Users\User-PC\Desktop\ServerTCP\Data\obj\Debug\Data.pdb
-C:\Users\User-PC\Desktop\BServer\Data\obj\Debug\Data.csprojAssemblyReference.cache
 C:\Users\User-PC\Desktop\BServer\Data\obj\Debug\Data.csproj.CoreCompileInputs.cache
 C:\Users\User-PC\Desktop\BServer\Data\obj\Debug\Data.dll
 C:\Users\User-PC\Desktop\BServer\Data\obj\Debug\Data.pdb
