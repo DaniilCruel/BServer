@@ -7,14 +7,14 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using System.IO;
-using Data;
+using System.Data;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Linq;
+using Data;
+using GOST_34_12_2015;
 
 namespace Server
 {
-
     // Модель сервера
 
     class ServerTCP
@@ -32,10 +32,10 @@ namespace Server
 
         private const int block = 1024; // Размер буффера при передаче
         private const string filePath = "files\\";
-
+        public Kuznechik Crypt = new Kuznechik();
         // Инициализация настроек сервера
- 
-        public ServerTCP(string ipAddress, int port)
+
+        public ServerTCP(string ipAddress, int port, Kuznechik Kuz)
         {
             dispatcher = Dispatcher.CurrentDispatcher;
             ep = new IPEndPoint(IPAddress.Parse(ipAddress), port);
@@ -43,6 +43,7 @@ namespace Server
             listenToken = new CancellationTokenSource();
             ClientList = new ObservableCollection<User>();
             FileList = new ObservableCollection<FileInfo>();
+            Crypt = Kuz;
         }
 
         // Запуск прослушивания входящих соединений
@@ -94,7 +95,7 @@ namespace Server
                 while (client.GetStream().DataAvailable)
                 {
                     bytes = client.GetStream().Read(buff, 0, buff.Length);
-                    str.Append(Encoding.UTF8.GetString(buff, 0, bytes));
+                    str.Append(Encoding.Default.GetString(buff, 0, bytes));
                 }
             }
             return str.ToString() != "" ? str.ToString() : "-1";
@@ -155,18 +156,27 @@ namespace Server
             {
                 Thread.Sleep(50);
                 if (!server.Pending()) continue; // Попытка соединения
-                incomingConnection = server.AcceptTcpClient();
-                Message messadd = new Message();
-                string clientName = messadd.RessiveMessege(incomingConnection).UserSend; // Получаем имя клиента и добавляем его в список
-                User client = new User(1,incomingConnection, clientName, new CancellationTokenSource());
-
                 List<string> ClientListM = new List<string>();
                 foreach (User user in ClientList)
                 {
                     ClientListM.Add(user.Login);
                 }
+
+                incomingConnection = server.AcceptTcpClient();
+                Message messadd = new Message();
+                string clientName = messadd.RessiveMessege(Crypt,incomingConnection).UserSend; // Получаем имя клиента и добавляем его в список
+
+                if (CheckUsername(clientName))
+                {
+                    Message Error = new Message() { ServerMessage = ServerMessage.WrongUsername, Reciever = incomingConnection.GetStream() , messege = clientName };
+                    Error.SendMessage(Crypt,Error);
+                    continue;
+                }
+
+                User client = new User(1,incomingConnection, clientName, new CancellationTokenSource());
+
                 Message Collection = new Message() { ServerMessage = ServerMessage.UsersCollection, Reciever= incomingConnection.GetStream(), Users = ClientListM };
-                Collection.SendMessage(Collection );
+                Collection.SendMessage(Crypt,Collection);
                
 
                 dispatcher.BeginInvoke(new Action(() => ClientList.Add(client)));
@@ -177,6 +187,10 @@ namespace Server
                 Broadcast(mess);
 
             }
+        }
+        public bool CheckUsername(string username)
+        {
+            return ClientList.Select(x => x.Login).Contains(username);
         }
 
         /// <summary>
@@ -192,7 +206,7 @@ namespace Server
                 {
                     if (client.TcpClient.GetStream().DataAvailable) // Есть какие-то данные
                     {
-                        readMes = readMes.RessiveMessege(client.TcpClient); // None,   RemoveUser,    Message,   Broadcast
+                        readMes = readMes.RessiveMessege(Crypt,client.TcpClient); // None,   RemoveUser,    Message,   Broadcast
                         switch ((int)readMes.ServerMessage)
                         {
                             case 1: // none
@@ -216,8 +230,8 @@ namespace Server
                                 Message Res = new Message() { Reciever = nwStream, UserSend= readMes.UserSend, messege = readMes.messege, ServerMessage = ServerMessage.Message };
                                 Message Send = new Message() { Reciever = nwStreamSender, UserSend = readMes.UserSend, messege = readMes.messege, ServerMessage = ServerMessage.Message };
 
-                                Res.SendMessage(Res);
-                                Send.SendMessage(Send);
+                                Res.SendMessage(Crypt,Res);
+                                Send.SendMessage(Crypt,Send);
 
                                 AddToLog(this, $"Message:{client.Login}: {readMes.messege}");
                                 break;
@@ -286,7 +300,7 @@ namespace Server
                     NetworkStream nwStream = client.TcpClient.GetStream();
                     message.UserResiv = client.Login;
                     message.Reciever = nwStream;
-                    message.SendMessage(message);
+                    message.SendMessage(Crypt,message);
               
             }
         }

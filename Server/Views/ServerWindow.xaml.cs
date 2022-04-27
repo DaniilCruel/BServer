@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using Server.Views;
 using Server.ViewModels;
 using Server.Other;
+using GOST_34_12_2015;
 
 namespace Server
 {
@@ -21,17 +22,16 @@ namespace Server
         {
             AppConfigManager.CreateConfigParameters("ip_address", "port");
 
-            if (Authorization(out string address, out int port))
+            if (Authorization(out string address, out int port, out Kuznechik Crypt))
             {
-                DataContext = new ServerVM(address, port);
+                DataContext = new ServerVM(address, port, Crypt);
             }
             else
             {
                 Application.Current.Shutdown();
             }
-
+            
             InitializeComponent();
-
             listUI = new List<UIElement>
             {
                 clientsListBox,
@@ -48,19 +48,21 @@ namespace Server
         /// <summary>
         /// Вызов модального окна для ввода IP-адресса и порта сервера
         /// </summary>
-        public bool Authorization(out string address, out int port)
+        public bool Authorization(out string address, out int port, out Kuznechik Crypt)
         {
             AuthorizationWindow authorizationWindow = new AuthorizationWindow();
             if (authorizationWindow.ShowDialog() == true)
             {
                 address = authorizationWindow.Address;
                 port = int.Parse(authorizationWindow.Port);
+                Crypt = authorizationWindow.Crypt;
                 return true;
             }
             else
             {
                 address = "";
                 port = -1;
+                Crypt = null;
                 return false;
             }
         }

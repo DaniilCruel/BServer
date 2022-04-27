@@ -16,6 +16,7 @@ namespace Data
         Message,                // сообщение
         BreakConnection,        // разрыв соединения на строне пользователя
         Broadcast,              // сообщение всем
-        WrongUsername           // имя занято
+        WrongUsername,          // имя занято
+        File                    // передача файла                  
     }
 }

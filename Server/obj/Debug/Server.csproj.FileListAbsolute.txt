@@ -92,3 +92,8 @@ C:\Users\User-PC\Desktop\BServer\Server\obj\Debug\Server.Properties.Resources.re
 C:\Users\User-PC\Desktop\BServer\Server\obj\Debug\Server.csproj.GenerateResource.cache
 C:\Users\User-PC\Desktop\BServer\Server\obj\Debug\Server.csproj.CoreCompileInputs.cache
 C:\Users\User-PC\Desktop\BServer\Server\obj\Debug\Server.csproj.CopyComplete
+C:\Users\User-PC\Desktop\BServer\Server\obj\Debug\Server.csproj.ResolveComReference.cache
+C:\Users\User-PC\Desktop\BServer\Server\bin\Debug\GOST_34_12_2015.dll
+C:\Users\User-PC\Desktop\BServer\Server\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\User-PC\Desktop\BServer\Server\bin\Debug\GOST_34_12_2015.pdb
+C:\Users\User-PC\Desktop\BServer\Server\bin\Debug\System.Numerics.Vectors.xml

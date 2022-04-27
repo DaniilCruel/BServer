@@ -15,6 +15,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using TCPChat.Infrastructure;
+using GOST_34_12_2015;
 
 namespace TCPChat.ViewModels
 {
@@ -102,6 +103,7 @@ namespace TCPChat.ViewModels
         private const int block = 1024;
         private string selectedUser;
         private string username;
+        Kuznechik Crypt = new Kuznechik();
         #endregion
 
         #region Properties
@@ -191,7 +193,7 @@ namespace TCPChat.ViewModels
                     message.ServerMessage = ServerMessage.Message;
                     message.UserResiv = SelectedUser;
                 }
-                message.SendMessage(message);
+                message.SendMessage(Crypt,message);
                 TextMessage = string.Empty;
             }
             ));
@@ -213,10 +215,10 @@ namespace TCPChat.ViewModels
                 UserResiv = "",
                 Reciever = nwStream
             };
-            mess.SendMessage(mess);
+            mess.SendMessage(Crypt,mess);
             ////////////
             Message messCl = new Message();
-            messCl = messCl.RessiveMessege(user.TcpClient); // Получаем имя клиента и добавляем его в список
+            messCl = messCl.RessiveMessege(Crypt,user.TcpClient); // Получаем имя клиента и добавляем его в список
             if (messCl.ServerMessage == ServerMessage.WrongUsername)
             {
                 user.TcpClient.Client.Shutdown(SocketShutdown.Both);
@@ -241,7 +243,7 @@ namespace TCPChat.ViewModels
                 {
                     //Message message = (Message)bf.Deserialize(nwStream);
                     Message message = new Message() ;
-                    message = message.RessiveMessege(user.TcpClient); // Получаем имя клиента и добавляем его в список
+                    message = message.RessiveMessege(Crypt,user.TcpClient); // Получаем имя клиента и добавляем его в список
                      
                     if (message.ServerMessage == ServerMessage.Message)
                     {
@@ -279,49 +281,6 @@ namespace TCPChat.ViewModels
             }
         }
 
-        /*
-        public void GetData2()
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            while (true)
-            {
-                try
-                {
-                    Message message = (Message)bf.Deserialize(nwStream);
-                    if (message.ServerMessage == ServerMessage.Message)
-                    {
-                        App.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            if (message.Sender.Login == Username)
-                                MessagessItems.Add(new MessageUI() { Sender = $"me: ", Message = message.MessageString, Color = "#000000", FontStyle = FontStyles.Normal, Align = "Right" });
-                            else
-                                MessagessItems.Add(new MessageUI() { Sender = $"{message.Sender.Login}: ", Message = message.MessageString, Color = "#000000", FontStyle = FontStyles.Normal, Align = "Left" });
-                        }));
-                    }
-                    else if (message.ServerMessage == ServerMessage.AddUser)
-                    {
-                        App.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            MessagessItems.Add(new MessageUI() { Sender = message.Sender.Login, Message = " joined the chat", Color = "#40698c", FontStyle = FontStyles.Oblique, Align = "Left" });
-                            if (!Users.Contains(message.Sender.Login))
-                                Users.Add($"{message.Sender.Login}");
-                        }));
-                    }
-                    else if (message.ServerMessage == ServerMessage.RemoveUser)
-                    {
-                        App.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            MessagessItems.Add(new MessageUI() { Sender = message.Sender.Login, Message = " has left the chat", Color = "#40698c", FontStyle = FontStyles.Oblique, Align = "Left" });
-                            Users.Remove(Users.Where(x => x == message.Sender.Login).First());
-                        }));
-                    }
-                }
-
-                catch (Exception e) { Console.WriteLine(e.Message); }
-
-            }
-        }
-        */
         public void SendData(Message message)
         {
             BinaryFormatter bf = new BinaryFormatter();
@@ -333,7 +292,7 @@ namespace TCPChat.ViewModels
             try
             {
                 Message Mess = new Message() { Sender = user.TcpClient, ServerMessage = ServerMessage.RemoveUser, UserSend = username };
-                Mess.SendMessage(Mess);
+                Mess.SendMessage(Crypt,Mess);
             }
             catch { }
         }

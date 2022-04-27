@@ -1,0 +1,8 @@
+C:\Users\User-PC\Desktop\BServer\GOST_34_12_2015\bin\Debug\GOST_34_12_2015.dll
+C:\Users\User-PC\Desktop\BServer\GOST_34_12_2015\bin\Debug\GOST_34_12_2015.pdb
+C:\Users\User-PC\Desktop\BServer\GOST_34_12_2015\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\User-PC\Desktop\BServer\GOST_34_12_2015\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\User-PC\Desktop\BServer\GOST_34_12_2015\obj\Debug\GOST2015.csproj.CoreCompileInputs.cache
+C:\Users\User-PC\Desktop\BServer\GOST_34_12_2015\obj\Debug\GOST2015.csproj.CopyComplete
+C:\Users\User-PC\Desktop\BServer\GOST_34_12_2015\obj\Debug\GOST_34_12_2015.dll
+C:\Users\User-PC\Desktop\BServer\GOST_34_12_2015\obj\Debug\GOST_34_12_2015.pdb

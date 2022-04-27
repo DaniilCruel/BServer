@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using Data;
+using GOST_34_12_2015;
 
 namespace Server.ViewModels
 {
@@ -26,13 +27,13 @@ namespace Server.ViewModels
         /// <summary>
         /// Инициализация необходимых для MainView данных
         /// </summary>
-        public ServerVM(string ipAddress, int port)
+        public ServerVM(string ipAddress, int port, Kuznechik Crypt)
         {
             File.Delete("Log.txt");
             dispatcher = Dispatcher.CurrentDispatcher;
             clientMutex = new Mutex();
             fileMutex = new Mutex();
-            server = new ServerTCP(ipAddress, port);
+            server = new ServerTCP(ipAddress, port, Crypt);
             server.ClientList.CollectionChanged += ClientList_CollectionChanged;
             server.FileList.CollectionChanged += FileList_CollectionChanged;
             server.AddToLog += LogList_AddData;

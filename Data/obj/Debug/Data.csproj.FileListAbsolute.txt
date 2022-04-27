@@ -15,3 +15,9 @@ C:\Users\User-PC\Desktop\BServer\Data\obj\Debug\Data.dll
 C:\Users\User-PC\Desktop\BServer\Data\obj\Debug\Data.pdb
 C:\Users\User-PC\Desktop\BServer\Data\bin\Debug\Data.dll
 C:\Users\User-PC\Desktop\BServer\Data\bin\Debug\Data.pdb
+C:\Users\User-PC\Desktop\BServer\Data\obj\Debug\Data.csprojAssemblyReference.cache
+C:\Users\User-PC\Desktop\BServer\Data\bin\Debug\GOST_34_12_2015.dll
+C:\Users\User-PC\Desktop\BServer\Data\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\User-PC\Desktop\BServer\Data\bin\Debug\GOST_34_12_2015.pdb
+C:\Users\User-PC\Desktop\BServer\Data\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\User-PC\Desktop\BServer\Data\obj\Debug\Data.csproj.CopyComplete

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Server"
         mc:Ignorable="d"
-        Title="Server settings" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+        Title="Server settings" SizeToContent="Width" WindowStartupLocation="CenterScreen" Height="286.922">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -15,7 +15,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        
+
         <TextBlock Grid.Row="0">Enter IP Address:</TextBlock>
         <TextBox Name="addressTextBox" VerticalAlignment="Top" Grid.Row="1" MinWidth="250">
             <TextBox.Text>
@@ -38,9 +38,14 @@
             </TextBox.Text>
         </TextBox>
 
-        <WrapPanel Grid.Row="4" HorizontalAlignment="Right" Margin="0,20,0,0">
+        <WrapPanel Grid.Row="4" HorizontalAlignment="Right" Margin="0,90,48,-70">
             <Button IsDefault="True" Click="Accept_Click" MinWidth="60" Margin="0,0,10,0">OK</Button>
             <Button IsCancel="True" MinWidth="60">Cancel</Button>
+        </WrapPanel>
+        <TextBlock Grid.Row="4" Margin="38,10,15,26" Text="Generate key in file or select file"/>
+        <WrapPanel Grid.Row="4" HorizontalAlignment="Right" Margin="0,44,10,-19" Width="230">
+            <Button IsDefault="True" Click="buttonGenerateKey_Click" MinWidth="60" Margin="0,0,10,0" Content="Creat file" Width="108" Height="26"/>
+            <Button IsDefault="True" Click="buttonLoadKey_Click"  MinWidth="60" Content="Seletc file" Width="107" Height="28"/>
         </WrapPanel>
 
     </Grid>

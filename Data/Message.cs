@@ -5,12 +5,12 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-
+using GOST_34_12_2015;
 
 namespace Data
 {
 
-    public class Message     // ServerMessage -> Sender -> Reciever -> Messege -> List -> |
+    public class Message     // ServerMessage //: Sender //: Reciever //: Messege //: List //: |
     {
         public ServerMessage ServerMessage { set; get; } = ServerMessage.None;
         public string UserSend { set; get; }
@@ -29,7 +29,7 @@ namespace Data
             Users = null;
         }
 
-        public void SendMessage(Message mess) 
+        public void SendMessage(Kuznechik Crypt, Message mess) 
         {
             string Users = null;
             if (mess.Users != null)
@@ -37,18 +37,20 @@ namespace Data
                 Users +=  user+ "-" ;
 
             string str = ((int)mess.ServerMessage).ToString() + "//:" + mess.UserSend + "//:" + mess.UserResiv + "//:" + mess.messege + "//:" + Users + "|END";
-                       
-            System.Console.WriteLine("Send:  " + str);
-            byte[] buff = Encoding.UTF8.GetBytes(str);
+            
+            System.Console.WriteLine("Send: before  " + str);
+            byte[] buff = Encoding.Default.GetBytes(str);
+
+            //Crypt.Encrypt(buff);
+            System.Console.WriteLine("Send: after  " + buff);
             mess.Reciever.Write(buff, 0, buff.Length);
             mess.Reciever.Flush();
         }
 
 
 
-        public Message RessiveMessege(TcpClient client) 
+        public Message RessiveMessege(Kuznechik Crypt, TcpClient client) 
         {
-            string strM;
             StringBuilder str = new StringBuilder();
             if (client.Client.Poll(1000000, SelectMode.SelectRead)) // Изменение на сокете
             {
@@ -57,38 +59,35 @@ namespace Data
                 while (client.GetStream().DataAvailable)
                 {
                     bytes = client.GetStream().Read(buff, 0, buff.Length);
-                    str.Append(Encoding.UTF8.GetString(buff, 0, bytes));
+                    System.Console.WriteLine("Ressive1: before " + buff);
+
+                    str.Append(Encoding.Default.GetString(buff, 0, bytes));
                 }
             }
-            strM = str.ToString();
-            System.Console.WriteLine("Ressive1: " + strM);
+            string strM = str.ToString();
+            System.Console.WriteLine("Ressive1: after" + strM);
 
             Message mess = new Message();
             int indexOfChar = 0;
             
             indexOfChar = strM.IndexOf("//:");
-            System.Console.WriteLine("ServerMess         :" + strM.Substring(0, indexOfChar));
             mess.ServerMessage = (ServerMessage)Convert.ToInt32(strM.Substring(0, indexOfChar));
             strM = strM.Remove(0, indexOfChar + 3);
 
             indexOfChar = strM.IndexOf("//:");
             mess.UserSend = strM.Substring(0, indexOfChar);
-            System.Console.WriteLine("SenderUser         :" + mess.UserSend);
             strM = strM.Remove(0, indexOfChar + 3);
 
             indexOfChar = strM.IndexOf("//:");
             mess.UserResiv = strM.Substring(0, indexOfChar);
-            System.Console.WriteLine("ResivUser         :" + mess.UserResiv);
             strM = strM.Remove(0, indexOfChar + 3);
 
             indexOfChar = strM.IndexOf("//:");
             mess.messege = strM.Substring(0, indexOfChar);
-            System.Console.WriteLine("Mess            :" + mess.messege);
             strM = strM.Remove(0, indexOfChar + 3);
 
             indexOfChar = strM.IndexOf("|END");
             string Users = strM.Substring(0, indexOfChar);
-            System.Console.WriteLine("Users           :" + Users);
             
             string[] ArrUsers = Users.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
             mess.Users = new List<string>();
