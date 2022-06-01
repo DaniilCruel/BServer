@@ -29,6 +29,7 @@ namespace Server
         public ObservableCollection<FileInfo> FileList { get; set; }         // Список файлов 
 
         public event EventHandler<string> AddToLog; // Событие записи в лог
+        public event EventHandler<string> KeyChanged;
 
         private const int block = 1024; // Размер буффера при передаче
         private const string filePath = "files\\";
@@ -53,6 +54,12 @@ namespace Server
             Task.Run(() => ListeningIncomingConnetions());
             Directory.CreateDirectory(filePath);
             SearchFiles();
+    
+            byte[] buff = Crypt.masterKey;
+            int bytes = 255;
+            string str2= Encoding.Unicode.GetString(buff, 0, bytes);
+
+            KeyChanged(this, str2);
             AddToLog(this, "Server is running");
         }
 

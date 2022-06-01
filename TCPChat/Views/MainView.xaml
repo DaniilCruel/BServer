@@ -16,9 +16,7 @@
         mc:Ignorable="d"
         Title="Simple Chat" Height="450" Width="800">
 
-    <Window.DataContext>
-        <vm:MainViewModel/>
-    </Window.DataContext>
+
 
     <Grid>
         <Grid.ColumnDefinitions>

@@ -138,9 +138,9 @@ namespace TCPChat.ViewModels
         public string EmailAddress { set; get; }
         #endregion
 
-        public MainViewModel()
+        public MainViewModel(string addres, int port)
         {
-            ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5002);
+            ep = new IPEndPoint(IPAddress.Parse(addres), port);
             user = new User();
 
             Users = new ObservableCollection<string>();

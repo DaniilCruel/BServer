@@ -20,7 +20,7 @@ namespace Server.Views
         public string Port { get; set; }    // Порт
         public string Error => throw new System.NotImplementedException();
         private bool loadKey = false;
-        private byte[] textBytes;
+        private byte[] textBytes = null;
         private System.Windows.Forms.OpenFileDialog openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
         private System.Windows.Forms.SaveFileDialog saveFileDialog1 =  new System.Windows.Forms.SaveFileDialog();
         private System.Windows.Forms.OpenFileDialog openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
@@ -68,6 +68,21 @@ namespace Server.Views
         /// <returns></returns>
         public bool IsValidPort(string port) => int.TryParse(Port, out var res) && res > 0 && res < 65536;
 
+        public bool IsValidKey(bool key)
+        {
+            if (key)
+                return true;
+            else
+            {
+                System.Windows.Forms.MessageBox.Show(
+                    "Generate session key in file or select file with key!",
+                    "Error",
+                    MessageBoxButtons.RetryCancel,
+                    MessageBoxIcon.Error
+                    ); ;
+                return false;
+            }
+        }
         /// <summary>
         /// Инициализирует адрес и порт значениями из app.config или по-умолчанию
         /// </summary>
@@ -76,7 +91,7 @@ namespace Server.Views
             string tmpParameter = AppConfigManager.ReadConfigParameter("ip_address");
             Address = tmpParameter != "" ? tmpParameter : "127.0.0.1";
             tmpParameter = AppConfigManager.ReadConfigParameter("port");
-            Port = tmpParameter != "" ? tmpParameter : "50000";
+            Port = tmpParameter != "" ? tmpParameter : "5000";
             InitializeComponent();
   
             DataContext = this;
@@ -88,7 +103,7 @@ namespace Server.Views
             /// </summary>
             private void Accept_Click(object sender, RoutedEventArgs e)
         {
-            if (IsValidIPAddress(Address) && IsValidPort(Port) &&  loadKey)
+            if (IsValidIPAddress(Address) && IsValidPort(Port) &&  IsValidKey(loadKey))
             {
                 Address = addressTextBox.Text;
                 Port = portTextBox.Text;

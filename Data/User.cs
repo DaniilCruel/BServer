@@ -25,7 +25,6 @@ namespace Data
   
         }
 
-
         public User(long IdG, TcpClient tcpClient, string login, CancellationTokenSource token)
         {
             id = IdG;

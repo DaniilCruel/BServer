@@ -43,6 +43,7 @@ namespace Data
 
             //Crypt.Encrypt(buff);
             System.Console.WriteLine("Send: after  " + buff);
+            
             mess.Reciever.Write(buff, 0, buff.Length);
             mess.Reciever.Flush();
         }

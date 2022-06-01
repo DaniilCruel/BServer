@@ -17,6 +17,8 @@ namespace Data
         BreakConnection,        // разрыв соединения на строне пользователя
         Broadcast,              // сообщение всем
         WrongUsername,          // имя занято
-        File                    // передача файла                  
+        File,                    // передача файла       
+        Hello,
+        Key
     }
 }

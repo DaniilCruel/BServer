@@ -1,0 +1,11 @@
+C:\Users\User-PC\Desktop\BServer\Data\bin\Release\Data.dll
+C:\Users\User-PC\Desktop\BServer\Data\bin\Release\Data.pdb
+C:\Users\User-PC\Desktop\BServer\Data\bin\Release\GOST_34_12_2015.dll
+C:\Users\User-PC\Desktop\BServer\Data\bin\Release\System.Numerics.Vectors.dll
+C:\Users\User-PC\Desktop\BServer\Data\bin\Release\GOST_34_12_2015.pdb
+C:\Users\User-PC\Desktop\BServer\Data\bin\Release\System.Numerics.Vectors.xml
+C:\Users\User-PC\Desktop\BServer\Data\obj\Release\Data.csprojAssemblyReference.cache
+C:\Users\User-PC\Desktop\BServer\Data\obj\Release\Data.csproj.CoreCompileInputs.cache
+C:\Users\User-PC\Desktop\BServer\Data\obj\Release\Data.csproj.CopyComplete
+C:\Users\User-PC\Desktop\BServer\Data\obj\Release\Data.dll
+C:\Users\User-PC\Desktop\BServer\Data\obj\Release\Data.pdb

@@ -38,6 +38,12 @@
                         <TextBlock Text="Log" FontSize="17" VerticalAlignment="Center" Margin="5 0"/>
                     </StackPanel>
                 </ListViewItem>
+                <ListViewItem Height="Auto">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Key" Width="25" Height="25" VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Text="Key" FontSize="17" VerticalAlignment="Center" Margin="5 0"/>
+                    </StackPanel>
+                </ListViewItem>
             </ListView>
         </Grid>
         <Grid Grid.Column="1">
@@ -46,13 +52,13 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <StackPanel  Grid.Row="0" Orientation="Horizontal">
-                
+
             </StackPanel>
             <Grid Name="dataGrid" Grid.Row="1">
                 <ListBox Name="clientsListBox" Style="{StaticResource MaterialDesignListBox}" ItemsSource="{Binding ClientList}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            
+
                             <DockPanel LastChildFill="True">
                                 <materialDesign:PackIcon DockPanel.Dock="Left" Kind="User" Width="17" Height="17" VerticalAlignment="Center" Margin="5"/>
                                 <TextBlock DockPanel.Dock="Left" Text="{Binding Login}" FontSize="17" VerticalAlignment="Center" Margin="5 0"/>
@@ -74,7 +80,32 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <TextBox Name="logTextBox" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Margin="10 10 10 -2"
-                    VerticalContentAlignment="Top" Text="{Binding Log}"></TextBox>
+                    VerticalContentAlignment="Top" Text="{Binding Log}">
+                </TextBox>
+                <Grid Name="keyBox" Margin="10" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0">Session Key:</TextBlock>
+                    <TextBox Name="Key" IsReadOnly="True" Text="{Binding Key}" VerticalAlignment="Top" Grid.Row="1" MinWidth="250">
+
+                    </TextBox>
+                    <TextBlock Grid.Row="4" HorizontalAlignment="Left" Margin="0,2,0,103" TextAlignment="Center" FontStyle="Oblique" FontWeight="Heavy" TextWrapping="WrapWithOverflow" Width="400" Text="Generate session key in file or select file with key!" FontSize="15"/>
+
+                    <WrapPanel Grid.Row="4" HorizontalAlignment="Center" Margin="0,41,29,47" Width="593" >
+                        <Button IsDefault="True"   Command="{Binding buttonGenerateKey_Click}" MinWidth="60" Margin="0,0,10,0" Content="Creat file" Width="179" Height="26"  />
+                        <Button IsDefault="True"   Command="{Binding buttonLoadKey_Click}" MinWidth="60" Content="Seletc file"  Margin="0,0,10,0"  Width="181" Height="26"/>
+                        <Button IsDefault="True"   Command="{Binding buttonSave_Click}" MinWidth="60" Content="Save file" Width="181" Height="26"/>
+                    </WrapPanel>
+                    <WrapPanel Grid.Row="4" HorizontalAlignment="Right" Margin="0,90,48,-70"/>
+
+                </Grid>
+
             </Grid>
         </Grid>
     </Grid>

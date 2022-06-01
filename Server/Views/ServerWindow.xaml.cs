@@ -36,14 +36,16 @@ namespace Server
             {
                 clientsListBox,
                 filesListBox,
-                logTextBox
+                logTextBox,
+                keyBox
+
             };
             dataGrid.Children.Clear();
             dataGrid.Children.Add(listUI[0]);
             listViewMenu.SelectedIndex = 0;
         }
 
-        
+
 
         /// <summary>
         /// Вызов модального окна для ввода IP-адресса и порта сервера
@@ -76,5 +78,7 @@ namespace Server
             dataGrid.Children.Clear();
             dataGrid.Children.Add(listUI[index]);
         }
+
+
     }
 }
