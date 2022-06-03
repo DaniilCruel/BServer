@@ -9,3 +9,8 @@ C:\Users\User-PC\Desktop\BServer\Data\obj\Release\Data.csproj.CoreCompileInputs.
 C:\Users\User-PC\Desktop\BServer\Data\obj\Release\Data.csproj.CopyComplete
 C:\Users\User-PC\Desktop\BServer\Data\obj\Release\Data.dll
 C:\Users\User-PC\Desktop\BServer\Data\obj\Release\Data.pdb
+C:\Users\User-PC\Desktop\BServer\Data\bin\Release\Microsoft.Azure.Management.Sql.dll
+C:\Users\User-PC\Desktop\BServer\Data\bin\Release\Hyak.Common.dll
+C:\Users\User-PC\Desktop\BServer\Data\bin\Release\Microsoft.Azure.Common.dll
+C:\Users\User-PC\Desktop\BServer\Data\bin\Release\Newtonsoft.Json.dll
+C:\Users\User-PC\Desktop\BServer\Data\bin\Release\Data.dll.config

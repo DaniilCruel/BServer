@@ -28,3 +28,4 @@ C:\Users\User-PC\Desktop\BServer\TCPChat\obj\Release\TCPChat.csproj.CoreCompileI
 C:\Users\User-PC\Desktop\BServer\TCPChat\obj\Release\TCPChat.csproj.CopyComplete
 C:\Users\User-PC\Desktop\BServer\TCPChat\obj\Release\TCPChat.exe
 C:\Users\User-PC\Desktop\BServer\TCPChat\obj\Release\TCPChat.pdb
+C:\Users\User-PC\Desktop\BServer\TCPChat\bin\Release\Data.dll.config
